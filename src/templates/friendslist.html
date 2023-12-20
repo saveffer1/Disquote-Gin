@@ -1,0 +1,152 @@
+
+    
+    <div class="search-friends-box" id="search-box">
+        <form id="SearchFrindForm" style="display: flex;">
+            <input class="input-friends-box" type="text" placeholder="Search"  >
+            <button class="search-friend-btn" type="submit">
+                <img src="{{ url_for('static', path='/assets/search-icon.png') }}" alt="">
+            </button>
+        </form>
+    </div>
+    <br>
+    <style> 
+    .avatarname h2 {
+  color:#ffffff;
+  
+} .round{
+    margin-bottom: 5px;
+    margin-right: 20px;
+    width: 15px;
+    height: 15px;
+}
+</style>
+    <div class="friendlist">
+        <div class="friendpanel" id="friendpanel">
+            <h2 style="font-family:Mukta" id="allfriend">Friends</h2>
+            <div class="line-4">
+                <hr>
+            </div>
+        </div>
+    </div>
+
+    <div class="forbtnfriend" id="forbtnfriend">
+    </div>
+
+<script>
+    async function createFriendElement(id, name, status, avatar) {
+
+            const divForFriend = $("#forbtnfriend");
+
+            const friendBtn = $("<button>").appendTo(divForFriend);
+
+            const friendDiv = $("<div>", { class: "grid_3" }).appendTo(friendBtn);
+
+            const profileDiv = $("<div>", { class: "Profile-Flist" }).appendTo(friendDiv);
+            
+            await fetch(`/image/server_avartar/${avatar}`, {
+                method: 'GET',
+                credentials: 'include'
+                }).then(async function (response) {
+                    if (response.ok) {
+                        return response.blob();
+                    } else {
+                        throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
+                    }
+                }).then(async function (blob) {
+                    if (blob) {
+                        $("<img>", { src: URL.createObjectURL(blob), alt: "" }).appendTo(profileDiv);
+                    } else {
+                        throw new Error("Failed to convert image to blob");
+                    }
+                }).catch(function (error) {
+                    console.error(error);
+            });
+            $("<div>", { class: `round ${status}` }).appendTo(profileDiv);
+
+            const avatarDiv = $("<div>", { class: "avatarname" }).appendTo(friendDiv);
+            
+            const h2 = $("<h2>", { text: name }).appendTo(avatarDiv);
+
+            const btnDiv = $("<div>", { class: "btnfriend" }).appendTo(friendDiv);
+            $("<div>", { class: "round" }).append($("<img>", { src: "{{ url_for('static', path='assets/message.png') }}", class: "fimg", width: 20, height: 20 })).appendTo(btnDiv);
+            $("<div>", { class: "round" }).append($("<img>", { src: "{{ url_for('static', path='assets/three-dots.png') }}", class: "threedot" })).appendTo(btnDiv);
+
+    }
+
+    async function callMyfriends() {
+            const searchBox = document.getElementById('SearchFrindForm');
+            const searchInput = document.querySelector('.input-friends-box');
+
+            searchBox.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const query = searchInput.value.toLowerCase();
+
+                const divForFriend = document.getElementById('forbtnfriend');
+                divForFriend.innerHTML = '';
+
+                const get_info = await fetch(`/account/search_friend/${query}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {'Content-Type': 'application/json',},
+                });
+                const data = await get_info.json();
+                for (friend of data) {
+                    const friend_id = friend.id;
+                    const friend_name = friend.username;
+                    const friend_tag = friend.tag;
+                    const friend_avatar = friend.avatar;
+                    const statusf = friend.status;
+
+                    let friend_status = 'online';
+                    if (statusf == 1) {
+                        friend_status = 'online';
+                    } else if (statusf == 2) {
+                        friend_status = 'idle';
+                    } else {
+                        friend_status = 'offline';
+                    }
+                    createFriendElement(friend_id, friend_name, friend_status, friend_avatar);
+                } 
+            });
+
+            const response = await fetch('/account/friends');
+            const flist = await response.json();
+            const divForFriend = document.getElementById('forbtnfriend');
+            divForFriend.innerHTML = '';
+
+            for (const id of flist) {
+                const friend_id = id;
+                const get_info = await fetch(`/account/get_account/${friend_id}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const data = await get_info.json();
+                const friend_name = data.username;
+                const friend_tag = data.tag;
+                const friend_avatar = data.avatar;
+                const statusf = data.status;
+
+                let friend_status = 'online';
+                if (statusf == 1) {
+                    friend_status = 'online';
+                }else if (statusf == 2) {
+                    friend_status = 'idle';
+                }else{
+                    friend_status = 'offline';
+                }
+
+                createFriendElement(friend_id, friend_name, friend_status, friend_avatar);
+            }
+        }
+
+    callMyfriends();
+</script>
+
+<script>
+    function clearInput() {
+    document.querySelector('.input-friends-box').value = '';
+}
+</script>

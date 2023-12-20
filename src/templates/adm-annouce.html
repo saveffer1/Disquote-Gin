@@ -1,0 +1,376 @@
+<!-- https://codepen.io/MatthewLeFevre/pen/zLEMQq -->
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Announcement</title>
+    <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
+    <link rel="icon" href="{{ url_for('static', path='/assets/favicon.ico') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', path='/style/style-annouce.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', path='/style/style-index.css') }}"> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="{{ url_for('static', path='/style/style-blog.scss') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+        integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.9.4/dist/css/uikit.min.css" />
+    
+</head>
+
+<body class="bg-body">
+    <nav class="navbar navbar-dark bg-dark text-white justify-content-between">
+        <a class="navbar-brand" href="/">
+            <img src="{{ url_for('static', path='/assets/discord-logo.png') }}" width="160" height="50" alt="">
+        </a>
+        <a class="navbar-brand" href="/admin/dashboard">Server Dashboard</a>
+    </nav>
+    <br>
+    <div class="container">
+        <div class="text-center">
+            <h3>Disquote Announcement</h3>
+        </div><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#blogModal" id="post">Create Announcement +</button>
+        
+    </div>
+    <br>
+    <div class="container">
+        <table class="table good" id="annouce_table" style="margin: auto;">
+        </table>
+    </div>
+
+    <div class="modal fade" id="blogModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <!-- Modal dialog -->
+        <div class="modal-dialog" role="document">
+          <!-- Modal content -->
+          <div class="modal-content">
+            <!-- Modal header -->
+            <div class="modal-header">
+              <h5 class="modal-title" id="myModalLabel">Disquote Announcement</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="toolbar">
+                    <a data-command='justifyLeft' href="#" class="toolbar-btn">
+                        <i class=' fas fa-align-left'></i>
+                    </a>
+                    <a command='justifyCenter' href="#" class="toolbar-btn">
+                        <i class=' fas fa-align-center'></i>
+                    </a>
+                    <a command='indent' href="#" class="toolbar-btn">
+                        <i class=' fas fa-indent'></i>
+                    </a>
+                    <a data-command='bold' href="#" class="toolbar-btn">
+                        <i class=' fas fa-bold'></i>
+                    </a>
+                    <a data-command='italic' href="#" class="toolbar-btn">
+                        <i class=' fas fa-italic'></i>
+                    </a>
+                    <a data-command='underline' href="#" class="toolbar-btn">
+                        <i class=' fas fa-underline'></i>
+                    </a>
+                    <a href="#" class="toolbar-btn" id="toggle-more">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </a>
+                    <a data-command='insertOrderedList' href="#" class="toolbar-btn mobile-closed">
+                        <i class="fas fa-list-ol"></i>
+                    </a>
+                    <a data-command='insertUnorderedList' href="#" class="toolbar-btn mobile-closed">
+                        <i class="fas fa-list-ul"></i>
+                    </a>
+                    <a data-command='createlink' href="#" class="toolbar-btn mobile-closed">
+                        <i class="fas fa-link"></i>
+                    </a>
+                    <a data-command='unlink' href="#" class="toolbar-btn mobile-closed">
+                        <i class="fas fa-unlink"></i>
+                    </a>
+                    <a data-command='h2' href="#" class="toolbar-btn mobile-closed">
+                        H2
+                    </a>
+                    <!-- <a data-command='h3' href="#" class="toolbar-btn mobile-closed">
+                        H3
+                    </a> -->
+                    <a data-command='p' href="#" class="toolbar-btn mobile-closed">
+                        P
+                    </a>
+                    <a id="emoji-btn" data-command='insertEmoji' href="#" class="emote toolbar-btn mobile-closed">
+                        <i class="fas fa-face-smile"></i>
+                    </a>
+                    <img src="{{ url_for('static', path='/assets/discord-logo.png') }}" alt="" id="image" style="display: none;">
+                </div>
+              <form class="document" action="">
+                  <input name="title" id="title" type="text" class="blog__title" placeholder="Title...">
+                  <div name="content" id="content" class="text-editor" contenteditable></div>
+              </form>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="createpost">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="/static/script/jquery.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.9.4/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.9.4/dist/js/uikit-icons.min.js"></script>
+    <script src="/static/script/vanillaEmojiPicker.js"></script>
+    <script>
+        new EmojiPicker({
+                trigger: [
+                    {
+                        selector: '#emoji-btn',
+                        insertInto: '#title'
+                    }
+                ],
+                closeButton: true,
+                //specialButtons: green
+            });
+    </script>
+    <script>
+        const postbtn = document.getElementById('post');
+        postbtn.addEventListener('click', function () {
+            // document.getElementById('announcement-section').style.display = 'block';
+            let modal = $('#blogModal');
+            modal.modal('toggle');
+            modal.find('.modal-title').text('Disquote Announcement');
+            modal.find('#title').val('');
+            modal.find('#content').html('');
+            const postbtn = document.getElementById('createpost');
+            postbtn.addEventListener('click', function () {
+                let title = document.getElementsByClassName('blog__title')[0].value;
+                let content = document.getElementById('content').innerHTML;
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/create_annouce',
+                    data: {
+                        title: title,
+                        content: content
+                    },
+                    success: function (data) {
+                        if (data == 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Announcement Created',
+                                text: 'Announcement has been created successfully!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Announcement Failed',
+                                text: 'Announcement has failed to be created!'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        const toggle = document.getElementById('toggle-more');
+        const btns = document.getElementsByClassName('toolbar-btn');
+        const coneditor = document.getElementById('content');
+
+        for (let btn of btns) {
+            btn.addEventListener('click', (e)=> {
+                let cmd = btn.attributes[0].value;
+                if( cmd == 'h2' ||
+                        cmd == 'h3' ||
+                        cmd == 'p') {
+                    document.execCommand('formatBlock', false, cmd);
+                }
+                if (cmd == 'createlink') {
+                    let url = prompt('Enter the link here: ', 'http:\/\/');
+            document.execCommand(btn.attributes[0].value, false, url);
+                } else {
+                    document.execCommand(btn.attributes[0].value, false, null);
+                }
+            });
+        }
+
+        toggle.addEventListener('click', function () {
+            for (let btn of btns) {
+                if(btn.classList.contains('mobile-closed')) {
+                    btn.classList.toggle('mobile-open');
+                }
+            }
+        });
+    </script>
+    <script>
+            async function get_annouce_list() {
+                    return fetch(`/admin/get_annouce`, {
+                        method: 'GET',
+                        credentials: 'include'
+                    })
+                        .then((response) => response.json())
+                        .then((responseJson) => { return responseJson });
+                }
+                async function loop_annouce() {
+                    const data = await get_annouce_list();
+                    console.log(data);
+
+                    let table = $('#annouce_table').DataTable({
+                        data: data,
+                        columns: [
+                        { title: "Title", data: "title" },
+                        {
+                            title: "Content", data: "content", render: function (data, type, row) {
+                            return type === 'display' && data.length > 50 ?
+                                data.substr(0, 50) + '...' :
+                                data;
+                            }
+                        },
+                        {
+                            title: "Date",
+                            data: "date",
+                            render: function (data, type, row) {
+                            return moment(data).fromNow();
+                            }
+                        },
+                        {
+                            title: "Actions",
+                            data: null,
+                            defaultContent: '<button class="edit-btn btn btn-warning">Edit</button> <button class="delete-btn btn btn-danger">Delete</button>'
+                        }
+                        ],
+                        paging: true,
+                        pageLength: 10,
+                        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                        order: [[2, "desc"]],
+                        searching: true,
+                        info: true,
+                        rowCallback: function (row, data) {
+                        // Add event listeners for edit and delete buttons
+
+                        $(row).on('click', function (e) {
+                            // Check if the clicked element is not an edit or delete button
+                            if (!$(e.target).hasClass('edit-btn') && !$(e.target).hasClass('delete-btn')) {
+                                let modal = $('<div class="modal" tabindex="-1" role="dialog">' +
+                                '<div class="modal-dialog" role="document">' +
+                                '<div class="modal-content">' +
+                                '<div class="modal-header">' +
+                                '<h5 class="modal-title">' + data.title + '</h5>' +
+                                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                                '<span aria-hidden="true">&times;</span>' +
+                                '</button>' +
+                                '</div>' +
+                                '<div class="modal-body">' +
+                                '<p class="text-muted">Date: ' + data.date + '</p>' +
+                                '<p>' + data.content + '</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>');
+
+                                // Append the modal to the body
+                                $('body').append(modal);
+
+                                // Show the modal
+                                modal.modal('show');
+
+                                // Remove the modal from the DOM when it's hidden
+                                modal.on('hidden.bs.modal', function () {
+                                modal.remove();
+                                });
+                            }else if ($(e.target).hasClass('delete-btn')){
+                                if(confirm('Are you sure you want to delete this annoucement?')) {
+                                    fetch(`/admin/delete_annouce/${data.id}`, {
+                                        method: 'DELETE',
+                                        credentials: 'include'
+                                    })
+                                        .then((response) => response.json())
+                                        .then((responseJson) => {
+                                            if(responseJson.status == 'success') {
+                                                Swal.fire({
+                                                    title: "Success!",
+                                                    text: "Annoucement deleted.",
+                                                    icon: "success",
+                                                    button: "OK",
+                                                }).then((result) => {
+                                                    window.location.reload();
+                                                });
+                                            }else {
+                                                Swal.fire({
+                                                    title: "Error!",
+                                                    text: "Something went wrong.",
+                                                    icon: "error",
+                                                    button: "OK",
+                                                });
+                                            }
+                                        });
+                                }
+                            }else if ($(e.target).hasClass('edit-btn')){
+                                let sel_title = data.title;
+                                let sel_content = data.content;
+                                let sel_id = data.id;
+
+                                let modal = $('#blogModal');
+                                modal.modal('toggle');
+                                modal.find('.modal-title').text('Edit Annoucement');
+                                modal.find('#title').val(sel_title);
+                                $('#content').html(sel_content);
+
+                                $('#createpost').on('click', function () {
+                                    let title = $('#title').val();
+                                    let content = $('#content').html();
+
+                                    const params = new URLSearchParams();
+                                    params.append('id', sel_id);
+                                    params.append('title', title);
+                                    params.append('content', content);
+
+                                    fetch(`/admin/update_annouce`, {
+                                        method: 'PUT',
+                                        credentials: 'include',
+                                        headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                        },
+                                        body: params
+                                    })
+                                        .then((response) => response.json())
+                                        .then((responseJson) => {
+                                            console.log(responseJson);
+                                            if(responseJson.status == 'success') {
+                                                Swal.fire({
+                                                    title: "Success!",
+                                                    text: "Annoucement edited.",
+                                                    icon: "success",
+                                                    button: "OK",
+                                                }).then((result) => {
+                                                    window.location.reload();
+                                                });
+                                            }else {
+                                                Swal.fire({
+                                                    title: "Error!",
+                                                    text: "Something went wrong.",
+                                                    icon: "error",
+                                                    button: "OK",
+                                                });
+                                            }
+                                        });
+                                });
+                            }
+                            });
+                        }
+                    });
+                    }
+            loop_annouce();
+    </script>   
+</body>

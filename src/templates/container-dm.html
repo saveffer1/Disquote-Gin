@@ -1,0 +1,48 @@
+
+
+<div class="in-container-dm">
+    <div class="nav-chat-dm">
+        <div class="ch-name">   <h5>#my friends</h5>    </div>
+        <div class="line"></div>
+        <div class="nav-dm">
+            <div class="menuDM">   <h5 id="friendlistload" >Friends List</h5>   </div>                    
+            <div class="menuDM">   <h5 id="pendingload" >Pending</h5>   </div>   
+            <div class="menuDM">
+                <button class="menuDM-btn" id="addfriendload">   <h5>Add Friends</h5>    </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="friend-list" id="friend-list">
+        <!-- load friend list -->
+        
+    </div>
+        <div class="members">
+            <div class="box-member">
+                
+            </div>
+        </div>
+</div>
+
+
+
+<script> 
+        document.getElementById('addfriendload').addEventListener('click' , (e) =>{
+            $(document).ready(function() { $("#friend-list").load("/addfriend");})  
+        });
+        document.getElementById('friendlistload').addEventListener('click' , (e) =>{
+            $(document).ready(function() { $("#friend-list").load("/friendslist");}) 
+        });
+
+        document.getElementById('pendingload').addEventListener('click' , (e) =>{
+            $(document).ready(function() { $("#friend-list").load("/pending");})  
+        });
+</script>
+
+
+
+<script>
+    function clearInput() {
+    document.querySelector('.input-friends-box').value = '';
+}
+</script>

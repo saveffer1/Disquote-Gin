@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Login </title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/assets/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/style/style-login.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+</head>
+
+
+<body>
+<!-- this is login -->
+    <div class="box_login">
+        <div class="position">
+            <form method="post" action="/account/login" class="container_login" id="container_login" >
+                <div class="centering-wrapper">
+                    <div class="section1 text-center">
+                        <div class="primary-header">Welcome back!</div>
+                        <div class="secondary-header">We're so excited to see you again!</div>
+                        <div class="input-position">
+                            <div class="form-group">
+                                <h5 class="input-placeholder" id="email-txt">Email<span class="error-message"
+                                        id="email-error"></span></h5>
+                                <input type="email" required="true" name="email" class="form-style" id="logemail"
+                                    autocomplete="off" style="margin-bottom: 20px;">
+                                <i class="input-icon uil uil-at"></i>
+                            </div>
+                            <div class="form-group">
+                                <h5 class="input-placeholder" id="pword-txt">Password<span class="error-message"
+                                        id="password-error"></span></h5>
+                                <input type="password" required="true" name="password" class="form-style" id="logpass"
+                                    autocomplete="on">
+                                <i class="input-icon uil uil-lock-alt"></i>
+                            </div>
+                        </div>
+                        <div class="password-container">
+                            <a href="#" class="link" onclick="showRegisterForm()">Forgot your password?</a>
+                        </div>
+                        <div class="btn-position">
+                            <button href="#" class="btn">login</button>
+                        </div>
+                        <!-- <div class="password-containerr"> -->
+                            <p class="nonlink">Need an account? <a href="" class="btn_toggle link" onclick="showRegisterForm()" style="text-decoration: none;" > register</a></p>
+                        <!-- </div> -->
+                    </div>
+                    <div class="horizontalSeparator"></div>
+                    <div class="qr-login">
+                        <div class="qr-container">
+                            <img class="logo" src="{{ url_for('static', path='/assets/disquote.png') }}" />
+                            <canvas id="qr-code"></canvas>
+                        </div>
+                        <div class="qr-pheader">Disquote</div>
+                        <div class="qr-sheader">This is <strong> Monkey's  </strong>program chat.</div>
+                        
+                    </div>
+                </div>
+            </form>
+            <!--  this is register form ----- -->
+            <form method="post" action="/account/register" enctype="multipart/form-data" class="container_register" id="container_register" style="display:none" >                
+                <div class="centering-wrapper">
+                    <div class="section2 text-center">
+                        <div class="primary-header">Create New User</div>
+                        <div class="input-position">
+                            <!-- -------------------------------------------------------------------------------------- -->
+                            <div class="form-group">
+                                <h5 class="input-placeholder" id="email-txt">Email<span class="error-message" id="email-error"></span></h5>
+                                <input type="email" required="true" name="email" class="form-style" id="regis-email"
+                                    autocomplete="off" style="margin-bottom: 20px;">
+                                <i class="input-icon uil uil-at"></i>
+                            </div>
+                            <!-- -------------------------------------------------------------------------------------- -->
+                            <div class="form-group">
+                                <h5 class="input-placeholder" id="username-txt">Username<span class="error-message" id="email-error"></span></h5>
+                                <input required="true" name="username" class="form-style" id="regis-username"
+                                    autocomplete="off" style="margin-bottom: 20px;">
+                                <i class="input-icon uil uil-at"></i>
+                            </div>
+                            <!-- -------------------------------------------------------------------------------------- -->
+                            <div class="form-group">
+                                <h5 class="input-placeholder" id="pword-txt">Password<span class="error-message" id="password-error"></span></h5>
+                                <input type="password" required="true" name="password" class="form-style" id="regis-pass"
+                                    autocomplete="on">
+                                <i class="input-icon uil uil-lock-alt"></i>
+                            </div>
+                            <!-- -------------------------------------------------------------------------------------- -->
+                            <br>                            
+                            <div class="form-group">
+                                <h5 class="input-placeholder" id="upload">Avatar<span ></span></h5>
+                                <input type="file" name="image" class="form-style" id="fileupload"/>
+                                <i class="input-icon uil uil-lock-alt"></i>
+                            </div>
+                            <br>
+                            <!-- -------------------------------------------------------------------------------------- -->
+
+                        </div>
+                        <div class="btn-position">
+                            <button type="submit" value="Upload" class="btn-register">register</button>
+                            <a href="" onclick="showLoginForm()" class="btn_toggle link"> you have an account? </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        if (document.cookie.split(';').some((cookie) => cookie.trim().startsWith('authen='))) {
+            window.location.href = "/channels/@me";
+        }
+    </script>
+    {% if reg_message %}
+    <script>
+        function showLoginForm() {
+            history.pushState('', document.title, '/account/login');
+            document.getElementById('container_login').style.display = 'block';
+            document.getElementById('container_register').style.display = 'none';
+        }
+
+        function showRegisterForm() {
+            history.pushState('', 'register', '/account/register');
+            document.getElementById('container_login').style.display = 'none';
+            document.getElementById('container_register').style.display = 'block';
+        }
+
+        var message = "{{ reg_message }}";
+        if (message == "success"){
+            Swal.fire({
+                    title: "Registration Success",
+                    text: "{{ reg_message }}",
+                    icon: "success",
+                    button: "OK",
+            });
+            showLoginForm();
+        }
+        else{
+            showRegisterForm()
+            Swal.fire({
+                title: "Registration Error",
+                text: "{{ reg_message }} {{ detail }}",
+                icon: "error",
+                button: "OK",
+            })
+        }
+    </script>
+    {% endif %}
+
+    {% if login_message %}
+    <script>
+        var message = "{{ login_message }}";
+        if (message == "Wrong email or password!"){
+            Swal.fire({
+                title: "Login Error",
+                text: "{{ login_message }}",
+                icon: "error",
+                button: "OK",
+            });
+        }
+    </script>
+    {% endif %}
+
+    <script>
+        history.replaceState("", document.title, window.location.pathname + window.location.search);
+        
+        function showLoginForm() {
+            history.pushState('', document.title, '/account/login');
+            document.getElementById('container_login').style.display = 'block';
+            document.getElementById('container_register').style.display = 'none';
+        }
+
+        function showRegisterForm() {
+            history.pushState('', 'register', '/account/register');
+            document.getElementById('container_login').style.display = 'none';
+            document.getElementById('container_register').style.display = 'block';
+        }
+        
+        if (window.location.pathname === '/account/register') {
+            showRegisterForm();
+        }
+
+    </script>
+</body>
+</html>

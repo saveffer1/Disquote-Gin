@@ -1,9 +1,12 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
+	"github.com/flosch/pongo2/v6"
 	"github.com/gin-gonic/gin"
+	"gitlab.com/go-box/pongo2gin/v6"
 )
 
 func CORS() gin.HandlerFunc {
@@ -29,7 +32,13 @@ func createGinApp() *gin.Engine {
 
 func main() {
 	app := createGinApp()
+
 	app.Use(CORS())
+
+	app.Use(gin.Recovery())
+
+	app.HTMLRender = pongo2gin.Default()
+	app.Static("/static", "./static")
 
 	v1 := app.Group("/v1")
 	{
@@ -46,13 +55,14 @@ func main() {
 		})
 	}
 
-	app.Static("/public", "./public")
-
-	app.LoadHTMLGlob("./public/html/*")
-
 	app.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", nil)
+		c.HTML(http.StatusOK, "index.html",
+			pongo2.Context{
+				"name": "hello pongo",
+				// "posts": posts,
+			},
+		)
 	})
 
-	app.Run(":2580")
+	log.Fatal(app.Run(":8080"))
 }
